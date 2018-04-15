@@ -5,7 +5,7 @@ CPP_SRC_FILES = $(shell find . -name "*.cpp")
 CPP_OBJ_FILES = $(patsubst %.cpp, %.o, $(CPP_SRC_FILES))
 CPP_DPT_FILES = $(patsubst %.cpp, %.d, $(CPP_SRC_FILES))
 
-DST = tokenizer
+DST = ./build/tokenizer
 
 $(DST) : $(CPP_OBJ_FILES)
 	$(CC) $^ -o $(DST)
@@ -30,4 +30,4 @@ clean :
 
 run :
 	make
-	./tokenizer
+	$(DST)
