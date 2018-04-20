@@ -23,8 +23,7 @@ int main(void)
             write(k)
         end
         )__";
-
-    // 调用词法分析
+    
     Tokenizer::TokenStream toks;
     try
     {
@@ -35,7 +34,25 @@ int main(void)
         cout << "Lex error: " << err.What() << endl;
     }
 
+    for(auto &t : toks)
+        cout << "[" << t.type << ", " << t.tokenStr << "]" << endl;
+
+    /*// 调用词法分析
+    Tokenizer::TokenIdxStream toks;
+    Tokenizer::TokenTable  tab;
+    try
+    {
+        toks = Tokenizer().Tokenize(src, tab);
+    }
+    catch(const TokenizerException &err)
+    {
+        cout << "Lex error: " << err.What() << endl;
+    }
+
     // 输出分析结果
-    for(auto &tok : toks)
+    for(auto &t : toks)
+    {
+        Token &tok = tab[t.second];
         cout << "[" << tok.type << ", " << tok.tokenStr << "]" << endl;
+    }*/
 }

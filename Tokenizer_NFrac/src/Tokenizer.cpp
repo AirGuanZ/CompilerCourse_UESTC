@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cctype>
 #include <map>
 #include <vector>
@@ -140,5 +141,27 @@ Tokenizer::TokenStream Tokenizer::Tokenize(const std::string &src)
     {
         rt.push_back(NextToken(src, idx));
     } while(rt.back().type != TokenType::EndMark);
+    return rt;
+}
+
+Tokenizer::TokenIdxStream Tokenizer::Tokenize(const std::string &src, TokenTable &tab)
+{
+    TokenIdxStream rt;
+    tab.clear();
+    size_t idx = 0;
+    do
+    {
+        Token tok = NextToken(src, idx);
+        auto it = std::find(tab.begin(), tab.end(), tok);
+        if(it != tab.end())
+        {
+            rt.push_back({ it->type, it - tab.begin() });
+        }
+        else
+        {
+            tab.push_back(tok);
+            rt.push_back({ tok.type, tab.size() - 1 });
+        }
+    } while(rt.back().first != TokenType::EndMark);
     return rt;
 }

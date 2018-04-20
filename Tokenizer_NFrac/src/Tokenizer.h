@@ -4,6 +4,7 @@
 #include <list>
 #include <ostream>
 #include <string>
+#include <vector>
 
 enum class TokenType
 {
@@ -36,6 +37,11 @@ struct Token
     std::string tokenStr;
 };
 
+inline bool operator==(const Token &L, const Token &R)
+{
+    return L.type == R.type && L.tokenStr == R.tokenStr;
+}
+
 // 用来表示词法分析错误
 class TokenizerException
 {
@@ -60,7 +66,11 @@ class Tokenizer
 public:
     using TokenStream = std::list<Token>;
 
-    TokenStream Tokenize(const std::string &src);
+    using TokenIdxStream = std::vector<std::pair<TokenType, size_t>>;
+    using TokenTable  = std::vector<Token>;
+
+    TokenStream    Tokenize(const std::string &src);
+    TokenIdxStream Tokenize(const std::string &src, TokenTable &tab);
 };
 
 #endif // TOKENIZER_H
