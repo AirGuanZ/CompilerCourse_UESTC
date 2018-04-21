@@ -31,7 +31,7 @@ bool Tokenizer::MatchSymbol(const std::string &sym)
     return false;
 }
 
-    // 从src[idx]开始，返回下一个词法单元
+// 从src[idx]开始，返回下一个词法单元
 Token Tokenizer::NextToken(void)
 {
     using namespace std;
@@ -80,6 +80,7 @@ Token Tokenizer::NextToken(void)
 
         throw TokenizerException("invalid integer literal", filename_, line_, 0);
     }
+
     if(isdigit(src_[idx_]))
     {
         string digits(1, src_[idx_++]);

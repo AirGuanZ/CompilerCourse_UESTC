@@ -52,11 +52,6 @@ struct Token
     std::string tokenStr;
 };
 
-inline bool operator==(const Token &L, const Token &R)
-{
-    return L.type == R.type && L.tokenStr == R.tokenStr;
-}
-
 // 用来表示词法分析错误
 class TokenizerException
 {
@@ -99,16 +94,15 @@ class Tokenizer
 public:
     using TokenStream = std::list<Token>;
 
-    using TokenIdxStream = std::vector<std::pair<TokenType, size_t>>;
-    using TokenTable  = std::vector<Token>;
-
     Tokenizer(const std::string &src, const std::string &filename);
 
-    TokenStream    Tokenize(std::vector<TokenizerException> &errs);
+    TokenStream Tokenize(std::vector<TokenizerException> &errs);
 
 private:
     void SkipWhitespaces(void);
+
     bool MatchSymbol(const std::string &sym);
+
     Token NextToken(void);
 
 private:
