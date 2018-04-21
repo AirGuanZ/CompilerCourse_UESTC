@@ -1,5 +1,5 @@
 CC = clang++
-CC_FLAGS = -std=c++11 -O2
+CC_FLAGS = -std=c++11 -O2 -Wall -Werror
 
 CPP_SRC_FILES = $(shell find . -name "*.cpp")
 CPP_OBJ_FILES = $(patsubst %.cpp, %.o, $(CPP_SRC_FILES))
