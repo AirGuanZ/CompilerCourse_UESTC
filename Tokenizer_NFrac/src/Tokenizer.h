@@ -44,6 +44,8 @@ enum class TokenType
     EndMark
 };
 
+constexpr int MAX_IDENTIFIER_LENGTH = 16;
+
 struct Token
 {
     TokenType type;

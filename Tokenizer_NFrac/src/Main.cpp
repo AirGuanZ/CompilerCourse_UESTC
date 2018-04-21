@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
     }
     for(auto &t : toks)
     {
-        fout << string(max(0, 16 - (int)t.tokenStr.length()), ' ')
+        fout << string(max(0, MAX_IDENTIFIER_LENGTH - (int)t.tokenStr.length()), ' ')
              << t.tokenStr
              << " "
              << TOKENTYPE_TO_INDEX[t.type]

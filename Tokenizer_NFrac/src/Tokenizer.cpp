@@ -96,7 +96,7 @@ Token Tokenizer::NextToken(void)
         while(isalnum(src_[idx_]) || src_[idx_] == '_')
             iden += src_[idx_++];
 
-        if(iden.length() > 16)
+        if(iden.length() > MAX_IDENTIFIER_LENGTH)
             throw TokenizerException("name length limit exceeded: " + iden, filename_, line_, 0);
 
         static const map<string, TokenType> keywords =
@@ -138,6 +138,6 @@ Tokenizer::TokenStream Tokenizer::Tokenize(std::vector<TokenizerException> &errs
             idx_ += err.SkipLength();
         }
     } while(rt.back().type != TokenType::EndMark);
-    
+
     return rt;
 }
