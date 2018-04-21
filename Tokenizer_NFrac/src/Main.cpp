@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <iterator>
 #include <map>
@@ -74,7 +75,7 @@ int main(int argc, char *argv[])
 
     vector<TokenizerException> errs;
     Tokenizer::TokenStream toks = Tokenizer(src, "TestFilename").Tokenize(errs);
-    
+
     // 错误输出
 
     if(errs.size())
@@ -106,9 +107,10 @@ int main(int argc, char *argv[])
     }
     for(auto &t : toks)
     {
-        fout << string(max(0, MAX_IDENTIFIER_LENGTH - (int)t.tokenStr.length()), ' ')
+        fout << setw(16) << setfill(' ')
              << t.tokenStr
              << " "
+             << setw(2) << setfill('0')
              << TOKENTYPE_TO_INDEX[t.type]
              << endl;
     }
