@@ -14,12 +14,8 @@ Tokenizer::Tokenizer(const std::string &src, const std::string &filename)
 // 跳过从src[idx]起的空白字符
 void Tokenizer::SkipWhitespaces(void)
 {
-    while(std::isspace(src_[idx_]))
-    {
-        if(src_[idx_] == '\n')
-            ++line_;
+    while(std::isspace(src_[idx_]) && src_[idx_] != '\n')
         ++idx_;
-    }
 }
 
 bool Tokenizer::MatchSymbol(const std::string &sym)
@@ -42,17 +38,28 @@ Token Tokenizer::NextToken(void)
     SkipWhitespaces();
     // 结束标志
     if(src_[idx_] == '\0')
-        return Token{ TokenType::EndMark, "" };
+        return Token{ TokenType::EndMark, "EOF" };
+    // 换行符
+    if(src_[idx_] == '\n')
+    {
+        ++line_, ++idx_;
+        return Token{ TokenType::NewLine, "EOLN" };
+    }
     // 符号
     static const vector<pair<string, TokenType>> specialSymbols =
     {
-        { "<=", TokenType::LessEqual },
-        { ":=", TokenType::Assign    },
-        { ";",  TokenType::Semicolon },
-        { "(",  TokenType::LeftBrac  },
-        { ")",  TokenType::RightBrac },
-        { "-",  TokenType::Minus     },
-        { "*",  TokenType::Times     },
+        { "<=", TokenType::LessEqual    },
+        { ">=", TokenType::GreaterEqual },
+        { ":=", TokenType::Assign       },
+        { "<>", TokenType::NotEqual     },
+        { "<",  TokenType::Less         },
+        { ">",  TokenType::Greater      },
+        { "=",  TokenType::Equal        },
+        { ";",  TokenType::Semicolon    },
+        { "(",  TokenType::LeftBrac     },
+        { ")",  TokenType::RightBrac    },
+        { "-",  TokenType::Minus        },
+        { "*",  TokenType::Times        },
     };
     for(auto &sym : specialSymbols)
     {
@@ -65,7 +72,7 @@ Token Tokenizer::NextToken(void)
         // 0打头的只能有一个数字，后面不能跟数字字母下划线
         if(!isalnum(src_[++idx_]) && src_[idx_] != '_')
             return Token{ TokenType::IntLiteral, "0" };
-        throw TokenizerException("invalid integer literal", filename_, line_);
+        throw TokenizerException("invalid integer literal", filename_, line_, 2);
     }
     if(isdigit(src_[idx_]))
     {
@@ -80,6 +87,8 @@ Token Tokenizer::NextToken(void)
         string iden(1, src_[idx_++]);
         while(isalnum(src_[idx_]) || src_[idx_] == '_')
             iden += src_[idx_++];
+        if(iden.length() > 16)
+            throw TokenizerException("name length limit exceeded: " + iden, filename_, line_, 0);
         static const map<string, TokenType> keywords =
         {
             { "integer",  TokenType::Integer  },
@@ -89,14 +98,16 @@ Token Tokenizer::NextToken(void)
             { "then",     TokenType::Then     },
             { "else",     TokenType::Else     },
             { "function", TokenType::Function },
+            { "read",     TokenType::Read     },
+            { "write",    TokenType::Write    }
         };
         auto it = keywords.find(iden);
         if(it != keywords.end())
             return Token{ it->second, iden };
         return Token{ TokenType::Identifier, iden };
     }
-    throw TokenizerException(string("unknown token ") + src_[idx_], filename_, line_);
-    return Token{ TokenType::EndMark, "" };
+    throw TokenizerException(string("unknown token ") + src_[idx_], filename_, line_, 1);
+    return Token{ TokenType::EndMark, "EOF" };
 }
 
 std::ostream &operator<<(std::ostream &out, TokenType type)
@@ -110,6 +121,7 @@ std::ostream &operator<<(std::ostream &out, TokenType type)
         "Then",
         "Else",
         "Function",
+        "Read", "Write",
 
         "Semicolon",
         "LeftBrac",
@@ -118,6 +130,13 @@ std::ostream &operator<<(std::ostream &out, TokenType type)
         "Minus",
         "Times",
         "Assign",
+        "Equal",
+        "NotEqual",
+        "Less",
+        "GreaterEqual",
+        "Greater",
+
+        "NewLine",
 
         "Identifier",
         "IntLiteral",
@@ -127,33 +146,20 @@ std::ostream &operator<<(std::ostream &out, TokenType type)
     return out << tokenTypeNames[std::underlying_type_t<TokenType>(type)];
 }
 
-Tokenizer::TokenStream Tokenizer::Tokenize(void)
+Tokenizer::TokenStream Tokenizer::Tokenize(std::vector<TokenizerException> &errs)
 {
     TokenStream rt;
     do
     {
-        rt.push_back(NextToken());
+        try
+        {
+            rt.push_back(NextToken());
+        }
+        catch(const TokenizerException &err)
+        {
+            errs.push_back(err);
+            idx_ += err.SkipLength();
+        }
     } while(rt.back().type != TokenType::EndMark);
-    return rt;
-}
-
-Tokenizer::TokenIdxStream Tokenizer::Tokenize(TokenTable &tab)
-{
-    TokenIdxStream rt;
-    tab.clear();
-    do
-    {
-        Token tok = NextToken();
-        auto it = std::find(tab.begin(), tab.end(), tok);
-        if(it != tab.end())
-        {
-            rt.push_back({ it->type, it - tab.begin() });
-        }
-        else
-        {
-            tab.push_back(tok);
-            rt.push_back({ tok.type, tab.size() - 1 });
-        }
-    } while(rt.back().first != TokenType::EndMark);
     return rt;
 }

@@ -1,4 +1,4 @@
-CC = g++
+CC = clang++
 CC_FLAGS = -std=c++14 -O2
 
 CPP_SRC_FILES = $(shell find . -name "*.cpp")
@@ -30,4 +30,4 @@ clean :
 
 run :
 	make
-	$(DST)
+	$(DST) test.pas

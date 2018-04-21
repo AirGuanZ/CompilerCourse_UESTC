@@ -13,6 +13,7 @@ enum class TokenType
     Begin, End,
     If, Then, Else,
     Function,
+    Read, Write,
 
     // 符号
     Semicolon,
@@ -20,6 +21,11 @@ enum class TokenType
     LessEqual,
     Minus, Times,
     Assign,
+    Equal, NotEqual, Less,
+    GreaterEqual, Greater,
+
+    // 换行
+    NewLine,
 
     // 标识符和整数字面量
     Identifier,
@@ -46,8 +52,8 @@ inline bool operator==(const Token &L, const Token &R)
 class TokenizerException
 {
 public:
-    TokenizerException(const std::string &msg, const std::string &filename, int line)
-        : msg_(msg), filename_(filename), line_(line)
+    TokenizerException(const std::string &msg, const std::string &filename, int line, int skipLen)
+        : msg_(msg), filename_(filename), line_(line), skipLen_(skipLen)
     {
         
     }
@@ -67,10 +73,16 @@ public:
         return filename_;
     }
 
+    int SkipLength(void) const
+    {
+        return skipLen_;
+    }
+
 private:
     std::string msg_;
     std::string filename_;
     int line_;
+    int skipLen_;
 };
 
 class Tokenizer
@@ -83,8 +95,7 @@ public:
 
     Tokenizer(const std::string &src, const std::string &filename);
 
-    TokenStream    Tokenize(void);
-    TokenIdxStream Tokenize(TokenTable &tab);
+    TokenStream    Tokenize(std::vector<TokenizerException> &errs);
 
 private:
     void SkipWhitespaces(void);

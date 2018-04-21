@@ -1,0 +1,3 @@
+Lex error around line 4 in TestFilename: name length limit exceeded: ffffffffffffffffffffffffddd
+Lex error around line 8 in TestFilename: unknown token :
+Lex error around line 10 in TestFilename: unknown token @
