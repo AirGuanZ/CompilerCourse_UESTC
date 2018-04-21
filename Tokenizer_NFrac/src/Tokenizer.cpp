@@ -72,7 +72,7 @@ Token Tokenizer::NextToken(void)
         // 0打头的只能有一个数字，后面不能跟数字字母下划线
         if(!isalnum(src_[++idx_]) && src_[idx_] != '_')
             return Token{ TokenType::IntLiteral, "0" };
-        throw TokenizerException("invalid integer literal", filename_, line_, 2);
+        throw TokenizerException("invalid integer literal", filename_, line_, 0);
     }
     if(isdigit(src_[idx_]))
     {
@@ -108,42 +108,6 @@ Token Tokenizer::NextToken(void)
     }
     throw TokenizerException(string("unknown token ") + src_[idx_], filename_, line_, 1);
     return Token{ TokenType::EndMark, "EOF" };
-}
-
-std::ostream &operator<<(std::ostream &out, TokenType type)
-{
-    static const std::string tokenTypeNames[] =
-    {
-        "Integer",
-        "Begin",
-        "End",
-        "If",
-        "Then",
-        "Else",
-        "Function",
-        "Read", "Write",
-
-        "Semicolon",
-        "LeftBrac",
-        "RightBrac",
-        "LessEqual",
-        "Minus",
-        "Times",
-        "Assign",
-        "Equal",
-        "NotEqual",
-        "Less",
-        "GreaterEqual",
-        "Greater",
-
-        "NewLine",
-
-        "Identifier",
-        "IntLiteral",
-
-        "EndMark",
-    };
-    return out << tokenTypeNames[std::underlying_type_t<TokenType>(type)];
 }
 
 Tokenizer::TokenStream Tokenizer::Tokenize(std::vector<TokenizerException> &errs)

@@ -10,19 +10,28 @@ enum class TokenType
 {
     // 关键字
     Integer,
-    Begin, End,
-    If, Then, Else,
+    Begin,
+    End,
+    If,
+    Then,
+    Else,
     Function,
-    Read, Write,
+    Read,
+    Write,
 
     // 符号
     Semicolon,
-    LeftBrac, RightBrac,
+    LeftBrac,
+    RightBrac,
     LessEqual,
-    Minus, Times,
+    Minus,
+    Times,
     Assign,
-    Equal, NotEqual, Less,
-    GreaterEqual, Greater,
+    Equal,
+    NotEqual,
+    Less,
+    GreaterEqual,
+    Greater,
 
     // 换行
     NewLine,
@@ -34,8 +43,6 @@ enum class TokenType
     // 结束标志
     EndMark
 };
-
-std::ostream &operator<<(std::ostream &out, TokenType type);
 
 struct Token
 {
