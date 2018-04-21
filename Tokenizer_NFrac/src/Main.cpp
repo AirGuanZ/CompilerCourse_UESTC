@@ -70,9 +70,13 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+    // 调用词法分析
+
     vector<TokenizerException> errs;
     Tokenizer::TokenStream toks = Tokenizer(src, "TestFilename").Tokenize(errs);
     
+    // 错误输出
+
     if(errs.size())
     {
         ofstream fout(ReplaceFileType(argv[1], "err"),
@@ -90,6 +94,8 @@ int main(int argc, char *argv[])
         }
         return -1;
     }
+
+    // 分析结果输出
 
     ofstream fout(ReplaceFileType(argv[1], "dyd"),
                        ofstream::out | ofstream::trunc);

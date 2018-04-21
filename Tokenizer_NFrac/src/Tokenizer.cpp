@@ -36,15 +36,18 @@ Token Tokenizer::NextToken(void)
 {
     using namespace std;
     SkipWhitespaces();
+
     // 结束标志
     if(src_[idx_] == '\0')
         return Token{ TokenType::EndMark, "EOF" };
+
     // 换行符
     if(src_[idx_] == '\n')
     {
         ++line_, ++idx_;
         return Token{ TokenType::NewLine, "EOLN" };
     }
+
     // 符号
     static const vector<pair<string, TokenType>> specialSymbols =
     {
@@ -61,17 +64,20 @@ Token Tokenizer::NextToken(void)
         { "-",  TokenType::Minus        },
         { "*",  TokenType::Times        },
     };
+
     for(auto &sym : specialSymbols)
     {
         if(MatchSymbol(sym.first))
             return Token{ sym.second, sym.first };
     }
+
     // 整形字面量
     if(src_[idx_] == '0')
     {
         // 0打头的只能有一个数字，后面不能跟数字字母下划线
         if(!isalnum(src_[++idx_]) && src_[idx_] != '_')
             return Token{ TokenType::IntLiteral, "0" };
+
         throw TokenizerException("invalid integer literal", filename_, line_, 0);
     }
     if(isdigit(src_[idx_]))
@@ -79,16 +85,20 @@ Token Tokenizer::NextToken(void)
         string digits(1, src_[idx_++]);
         while(isdigit(src_[idx_]))
             digits += src_[idx_++];
+
         return Token{ TokenType::IntLiteral, digits };
     }
+
     // 标识符 & 关键字
     if(isalpha(src_[idx_]) || src_[idx_] == '_')
     {
         string iden(1, src_[idx_++]);
         while(isalnum(src_[idx_]) || src_[idx_] == '_')
             iden += src_[idx_++];
+
         if(iden.length() > 16)
             throw TokenizerException("name length limit exceeded: " + iden, filename_, line_, 0);
+
         static const map<string, TokenType> keywords =
         {
             { "integer",  TokenType::Integer  },
@@ -101,11 +111,14 @@ Token Tokenizer::NextToken(void)
             { "read",     TokenType::Read     },
             { "write",    TokenType::Write    }
         };
+
         auto it = keywords.find(iden);
         if(it != keywords.end())
             return Token{ it->second, iden };
+
         return Token{ TokenType::Identifier, iden };
     }
+
     throw TokenizerException(string("unknown token ") + src_[idx_], filename_, line_, 1);
     return Token{ TokenType::EndMark, "EOF" };
 }
@@ -125,5 +138,6 @@ Tokenizer::TokenStream Tokenizer::Tokenize(std::vector<TokenizerException> &errs
             idx_ += err.SkipLength();
         }
     } while(rt.back().type != TokenType::EndMark);
+    
     return rt;
 }
