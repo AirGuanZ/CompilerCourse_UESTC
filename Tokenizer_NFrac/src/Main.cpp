@@ -23,19 +23,24 @@ int main(void)
             write(k)
         end
         )__";
-    
+
     Tokenizer::TokenStream toks;
     try
     {
-        toks = Tokenizer().Tokenize(src);
+        toks = Tokenizer(src, "TestFilename").Tokenize();
     }
     catch(const TokenizerException &err)
     {
-        cout << "Lex error: " << err.What() << endl;
+        cout << "Lex error around line "
+             << err.Line() << " in "
+             << err.Filename() << ": "
+             << err.What() << endl;
     }
 
     for(auto &t : toks)
         cout << "[" << t.type << ", " << t.tokenStr << "]" << endl;
+
+
 
     /*// 调用词法分析
     Tokenizer::TokenIdxStream toks;

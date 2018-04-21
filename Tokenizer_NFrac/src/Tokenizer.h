@@ -46,8 +46,8 @@ inline bool operator==(const Token &L, const Token &R)
 class TokenizerException
 {
 public:
-    TokenizerException(const std::string &msg)
-        : msg_(msg)
+    TokenizerException(const std::string &msg, const std::string &filename, int line)
+        : msg_(msg), filename_(filename), line_(line)
     {
         
     }
@@ -57,8 +57,20 @@ public:
         return msg_.c_str();
     }
 
+    int Line(void) const
+    {
+        return line_;
+    }
+
+    const std::string &Filename(void) const
+    {
+        return filename_;
+    }
+
 private:
     std::string msg_;
+    std::string filename_;
+    int line_;
 };
 
 class Tokenizer
@@ -69,8 +81,22 @@ public:
     using TokenIdxStream = std::vector<std::pair<TokenType, size_t>>;
     using TokenTable  = std::vector<Token>;
 
-    TokenStream    Tokenize(const std::string &src);
-    TokenIdxStream Tokenize(const std::string &src, TokenTable &tab);
+    Tokenizer(const std::string &src, const std::string &filename);
+
+    TokenStream    Tokenize(void);
+    TokenIdxStream Tokenize(TokenTable &tab);
+
+private:
+    void SkipWhitespaces(void);
+    bool MatchSymbol(const std::string &sym);
+    Token NextToken(void);
+
+private:
+    std::string src_;
+    int idx_;
+
+    std::string filename_;
+    int line_;
 };
 
 #endif // TOKENIZER_H
