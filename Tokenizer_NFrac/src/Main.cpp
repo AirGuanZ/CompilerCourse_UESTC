@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
     // 调用词法分析
 
     vector<TokenizerException> errs;
-    Tokenizer::TokenStream toks = Tokenizer(src, "TestFilename").Tokenize(errs);
+    Tokenizer::TokenStream toks = Tokenizer(src, argv[1]).Tokenize(errs);
 
     // 错误输出
 
