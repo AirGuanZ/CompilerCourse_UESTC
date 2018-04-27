@@ -17,10 +17,10 @@ $(DST) : $(CPP_OBJ_FILES)
 	@set -e; \
 	rm -f $@; \
 	$(CC) -MM $< $(CC_INCLUDE_FLAGS) > $@.$$$$.dtmp; \
-	sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$.dtmp > $@; \
+	sed 's,\(.*\)\.o\:,$*\.o $*\.d\:,g' < $@.$$$$.dtmp > $@; \
 	rm -f $@.$$$$.dtmp
 
--include $(CPP_OBJ_FILES:.o=.d)
+-include $(CPP_DPT_FILES)
 
 clean :
 	rm -f $(DST)
