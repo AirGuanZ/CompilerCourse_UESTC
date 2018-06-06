@@ -142,12 +142,12 @@ int main(int argc, char *argv[])
 
     for(const Proc &p : parser.GetProcs())
     {
-        fout << "Proc"                              << endl
-             << "    Name      = " << p.name        << endl
-             << "    Type      = " << "Integer"     << endl
-             << "    Level     = " << p.level       << endl
-             << "    VarBegin  = " << p.varPosBegin << endl
-             << "    VarEnd    = " << p.varPosEnd   << endl;
+        fout << "Proc"                                << endl
+             << "    Name      = " << p.name          << endl
+             << "    Type      = " << "Integer"       << endl
+             << "    Level     = " << p.level         << endl
+             << "    VarBegin  = " << p.varPosBegin   << endl
+             << "    VarEnd    = " << p.varPosEnd - 1 << endl;
     }
 
     fout.close();

@@ -75,14 +75,17 @@ private:
 
     void Error(const std::string &msg) const;
 
+    // 匹配一个token，若成功则跳过该token
     bool Match(TokenType type);
 
     const Token &Current(void) const;
 
     void Next(void);
 
+    // 检查一个变量是否有定义
     void CheckVarDef(const std::string &var) const;
 
+    // 检查一个过程是否有定义
     void CheckProcDef(const std::string &var) const;
 
     void ParseProgram(void);
@@ -118,6 +121,7 @@ private:
     std::string filename_;
     int level_;
 
+    // 记录正在分析的过程名
     std::string containingProc_;
 };
 

@@ -70,6 +70,8 @@ void Parser::CheckVarDef(const std::string &v) const
 
 void Parser::CheckProcDef(const std::string &p) const
 {
+    // 当前正在分析的过程还未被加入过程名表中
+    // 所以这里单独比较一下，以允许递归调用
     if(p == containingProc_)
         return;
 
@@ -136,12 +138,13 @@ void Parser::ParseVarDef(const std::string &paramName,
 
     Next();
 
+    // 不能在同一作用域内重复定义变量，也不允许定义和当前过程名相同的变量
     auto it = std::find_if(vars_.begin(), vars_.end(),
     [&](const Var &var)->bool
     {
         return var.name == newVarName && var.level == this->level_;
     });
-    if(it != vars_.end())
+    if(it != vars_.end() || newVarName == containingProc_)
         Error("Variale redefined: " + newVarName);
     
     Var newVar =
