@@ -5,7 +5,7 @@ CPP_SRC_FILES = $(shell find . -name "*.cpp")
 CPP_OBJ_FILES = $(patsubst %.cpp, %.o, $(CPP_SRC_FILES))
 CPP_DPT_FILES = $(patsubst %.cpp, %.d, $(CPP_SRC_FILES))
 
-DST = ./build/tokenizer
+DST = ./build/parser
 
 $(DST) : $(CPP_OBJ_FILES)
 	$(CC) $^ -o $(DST)
@@ -28,8 +28,11 @@ clean :
 	rm -f $(CPP_DPT_FILES)
 	rm -f $(shell find . -name "*.dtmp")
 
-	rm -f test.dyd
-	rm -f test.err
+	# 测试文件
+	rm -f *.dyd
+	rm -f *.varfil
+	rm -f *.profil
+	rm -f *.err
 
 run :
 	make
