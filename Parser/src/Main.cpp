@@ -120,15 +120,15 @@ int main(int argc, char *argv[])
 
     for(const Var &v : parser.GetVars())
     {
-        fout << "Var"                             << endl
-             << "    Name      = " << v.name      << endl
-             << "    Procedure = " << v.proc      << endl
+        fout << "Var"                              << endl
+             << "    Name      = " << v.name       << endl
+             << "    Procedure = " << v.proc       << endl
              << "    Kind      = " <<
                 (v.kind == VarKind::Variable ?
-                    "Variable" : "Parameter")     << endl
-             << "    Type      = " << "Integer"   << endl
-             << "    Level     = " << v.level     << endl
-             << "    Offset    = " <<v.posInTable << endl;
+                    "Variable" : "Parameter")      << endl
+             << "    Type      = " << "Integer"    << endl
+             << "    Level     = " << v.level      << endl
+             << "    Offset    = " << v.posInTable << endl;
     }
 
     fout.close();
@@ -146,8 +146,8 @@ int main(int argc, char *argv[])
              << "    Name      = " << p.name          << endl
              << "    Type      = " << "Integer"       << endl
              << "    Level     = " << p.level         << endl
-             << "    VarBegin  = " << p.varPosBegin   << endl
-             << "    VarEnd    = " << p.varPosEnd - 1 << endl;
+             << "    FirstVar  = " << p.varPosBegin   << endl
+             << "    LastVar   = " << p.varPosEnd - 1 << endl;
     }
 
     fout.close();
