@@ -117,7 +117,8 @@ void Parser::ParseDefs(const std::string &paramName,
         else
             ParseVarDef(paramName, procName);
         
-        Match(TokenType::Semicolon);
+        if(!Match(TokenType::Semicolon) && !Match(TokenType::End))
+            Error("';' expected");
 
     } while(Current().type == TokenType::Integer);
 }

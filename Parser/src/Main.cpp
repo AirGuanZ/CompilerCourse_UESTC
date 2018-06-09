@@ -55,14 +55,10 @@ int main(int argc, char *argv[])
         ofstream fout(ReplaceFileType(filename, "err"), ofstream::out);
         for(auto &e : errs)
         {
-            fout << "Lex error around line "
-                 << e.line << " in "
-                 << e.filename << ": "
-                 << e.msg << endl;
-            cout << "Lex error around line "
-                 << e.line << " in "
-                 << e.filename << ": "
-                 << e.msg << endl;
+            fout << "***LINE: " << e.line
+                 << "  " << e.msg << endl;
+            cout << "***LINE: " << e.line
+                 << "  " << e.msg << endl;
         }
         return -1;
     }
@@ -98,14 +94,10 @@ int main(int argc, char *argv[])
     catch(const ParserException &e)
     {
         ofstream fout(ReplaceFileType(filename, "err"), ofstream::out);
-        cout << "Syntax error around line "
-             << e.line << " in "
-             << e.filename << ": "
-             << e.msg << endl;
-        fout << "Syntax error around line "
-             << e.line << " in "
-             << e.filename << ": "
-             << e.msg << endl;
+        fout << "***LINE: " << e.line
+             << "  " << e.msg << endl;
+        cout << "***LINE: " << e.line
+             << "  " << e.msg << endl;
         return -1;
     }
 

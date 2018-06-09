@@ -84,14 +84,10 @@ int main(int argc, char *argv[])
                            ofstream::out | ofstream::trunc);
         for(auto &e : errs)
         {
-            fout << "Lex error around line "
-                 << e.Line() << " in "
-                 << e.Filename() << ": "
-                 << e.What() << endl;
-            cout << "Lex error around line "
-                 << e.Line() << " in "
-                 << e.Filename() << ": "
-                 << e.What() << endl;
+            fout << "***LINE: " << e.Line()
+                 << "  " << e.What() << endl;
+            cout << "***LINE: " << e.Line()
+                 << "  " << e.What() << endl;
         }
         return -1;
     }
