@@ -24,12 +24,11 @@ $(DST) : $(CPP_OBJ_FILES)
 
 clean :
 	rm -f $(DST)
-	rm -f $(CPP_OBJ_FILES)
-	rm -f $(CPP_DPT_FILES)
+	rm -f $(CPP_OBJ_FILES) $(CPP_DPT_FILES)
 	rm -f $(shell find . -name "*.dtmp")
 
-	rm -f test.dyd
-	rm -f test.err
+	rm -f *.dyd
+	rm -f *.err
 
 run :
 	make

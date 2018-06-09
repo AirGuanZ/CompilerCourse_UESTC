@@ -103,6 +103,23 @@ int main(int argc, char *argv[])
 
     // 语法分析结果输出
 
+    fout.open(ReplaceFileType(filename, "dys"), ofstream::out);
+    if(!fout)
+    {
+        cout << "Failed to open dys file" << endl;
+        return -1;
+    }
+    for(auto &t : toks)
+    {
+        fout << setw(16) << setfill(' ')
+             << t.tokenStr
+             << " "
+             << setw(2) << setfill('0')
+             << static_cast<int>(t.type)
+             << endl;
+    }
+    fout.close();
+
     fout.open(ReplaceFileType(filename, "varfil"), ofstream::out);
     if(!fout)
     {
