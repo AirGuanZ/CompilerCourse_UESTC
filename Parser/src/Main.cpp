@@ -87,17 +87,17 @@ int main(int argc, char *argv[])
 
     Parser parser(toks, filename);
     
-    try
-    {
-        parser.Parse();
-    }
-    catch(const ParserException &e)
+    parser.Parse();
+    if(parser.GetErrs().size())
     {
         ofstream fout(ReplaceFileType(filename, "err"), ofstream::out);
-        fout << "***LINE: " << e.line
-             << "  " << e.msg << endl;
-        cout << "***LINE: " << e.line
-             << "  " << e.msg << endl;
+        for(auto &e : parser.GetErrs())
+        {
+            fout << "***LINE: " << e.line
+                << "  " << e.msg << endl;
+            cout << "***LINE: " << e.line
+                << "  " << e.msg << endl;
+        }
         return -1;
     }
 

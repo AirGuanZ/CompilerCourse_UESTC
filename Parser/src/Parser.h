@@ -71,6 +71,8 @@ public:
 
     const ProcTable &GetProcs(void) const;
 
+    const Errs &GetErrs(void) const;
+
 private:
 
     void Error(const std::string &msg) const;
@@ -110,6 +112,8 @@ private:
 
     void ParseFactor(void);
 
+    void ErrorRecWithDef(void);
+
 private:
 
     Tokenizer::TokenStream toks_;
@@ -123,6 +127,8 @@ private:
 
     // 记录正在分析的过程名
     std::string containingProc_;
+
+    std::vector<ParserException> errs_;
 };
 
 #endif /* PARSER_H */

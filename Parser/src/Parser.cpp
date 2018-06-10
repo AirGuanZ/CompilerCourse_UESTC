@@ -16,9 +16,16 @@ Parser::Parser(const Tokenizer::TokenStream &toks,
 
 void Parser::Parse(void)
 {
-    ParseProgram();
-    if(!Match(TokenType::EndMark))
-        Error("program end expected");
+    try
+    {
+        ParseProgram();
+        if(!Match(TokenType::EndMark))
+            Error("program end expected");
+    }
+    catch(const ParserException &err)
+    {
+        errs_.push_back(err);
+    }
 }
 
 const VarTable &Parser::GetVars(void) const
@@ -29,6 +36,11 @@ const VarTable &Parser::GetVars(void) const
 const ProcTable &Parser::GetProcs(void) const
 {
     return procs_;
+}
+
+const Parser::Errs &Parser::GetErrs(void) const
+{
+    return errs_;
 }
 
 void Parser::Error(const std::string &msg) const
@@ -109,16 +121,24 @@ void Parser::ParseDefs(const std::string &paramName,
                        const std::string &procName)
 {
     do {
-        if(!Match(TokenType::Integer))
-            Error("'integer' expected");
-        
-        if(Match(TokenType::Function))
-            ParseProcDef();
-        else
-            ParseVarDef(paramName, procName);
-        
-        if(!Match(TokenType::Semicolon) && !Match(TokenType::End))
-            Error("';' expected");
+        try{
+            if(!Match(TokenType::Integer))
+                Error("'integer' expected");
+            
+            if(Match(TokenType::Function))
+                ParseProcDef();
+            else
+                ParseVarDef(paramName, procName);
+            
+            if(!Match(TokenType::Semicolon) && !Match(TokenType::End))
+                Error("';' expected");
+        }
+        catch(const ParserException &err)
+        {
+            errs_.push_back(err);
+            ErrorRecWithDef();
+            Match(TokenType::Semicolon);
+        }
 
     } while(Current().type == TokenType::Integer);
 }
@@ -126,7 +146,15 @@ void Parser::ParseDefs(const std::string &paramName,
 void Parser::ParseExecs()
 {
     do {
-        ParseExec();
+        try
+        {
+            ParseExec();
+        }
+        catch(const ParserException &err)
+        {
+            errs_.push_back(err);
+            ErrorRecWithDef();
+        }
     } while(Match(TokenType::Semicolon));
 }
 
@@ -212,10 +240,10 @@ void Parser::ParseProcDef(void)
 
     containingProc_ = oldCon;
 
+    --level_;
+
     if(!Match(TokenType::End))
         Error("'end' expected");
-
-    --level_;
 
     size_t procVarEnd = vars_.size();
 
@@ -268,10 +296,8 @@ void Parser::ParseExec(void)
         
         ParseExec();
     }
-    else
+    else if(Current().type == TokenType::Identifier)
     {
-        if(Current().type != TokenType::Identifier)
-            Error("variable name expected");
         if(Current().tokenStr != containingProc_)
             CheckVarDef(Current().tokenStr);
         Next();
@@ -281,6 +307,8 @@ void Parser::ParseExec(void)
         
         ParseArithExpr();
     }
+    else
+        Error("unnknown statement type");
 }
 
 void Parser::ParseArithExpr(void)
@@ -318,4 +346,15 @@ void Parser::ParseFactor(void)
     }
     else
         CheckVarDef(refName);
+}
+
+void Parser::ErrorRecWithDef(void)
+{
+    while(Current().type != TokenType::Semicolon)
+    {
+        if(Current().type == TokenType::EndMark ||
+           Current().type == TokenType::End)
+            break;
+        Next();
+    }
 }
