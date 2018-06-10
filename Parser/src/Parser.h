@@ -77,6 +77,9 @@ private:
 
     void Error(const std::string &msg) const;
 
+    // 从分析定义时发生错误的状态恢复到可以继续进行分析的状态
+    void ErrorRecWithDef(void);
+
     // 匹配一个token，若成功则跳过该token
     bool Match(TokenType type);
 
@@ -112,8 +115,6 @@ private:
 
     void ParseFactor(void);
 
-    void ErrorRecWithDef(void);
-
 private:
 
     Tokenizer::TokenStream toks_;
@@ -128,7 +129,7 @@ private:
     // 记录正在分析的过程名
     std::string containingProc_;
 
-    std::vector<ParserException> errs_;
+    Errs errs_;
 };
 
 #endif /* PARSER_H */

@@ -48,6 +48,17 @@ void Parser::Error(const std::string &msg) const
     throw ParserException(filename_, Current().line, msg);
 }
 
+void Parser::ErrorRecWithDef(void)
+{
+    while(Current().type != TokenType::Semicolon)
+    {
+        if(Current().type == TokenType::EndMark ||
+           Current().type == TokenType::End)
+            break;
+        Next();
+    }
+}
+
 bool Parser::Match(TokenType type)
 {
     if(cur_->type == type)
@@ -346,15 +357,4 @@ void Parser::ParseFactor(void)
     }
     else
         CheckVarDef(refName);
-}
-
-void Parser::ErrorRecWithDef(void)
-{
-    while(Current().type != TokenType::Semicolon)
-    {
-        if(Current().type == TokenType::EndMark ||
-           Current().type == TokenType::End)
-            break;
-        Next();
-    }
 }
